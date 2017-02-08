@@ -5,9 +5,9 @@
 
 import logging
 from logging.config import dictConfig
-#from fabric.api import *
-#from fabric.tasks import execute
-#from fabric.state import env, output
+from fabric.api import *
+from fabric.tasks import execute
+from fabric.state import env, output
 import os
 #import libzfs_core
 #import yaml
@@ -37,18 +37,12 @@ import sys
 #log = logging.getLogger('replicator_log')
 
 #
-# Variabe
-#
-
-if_snapshots = sys.argv[1]
-
-#
 # Functions
 #
 def __init__(dataset_name):
     self.dataset_name = dataset_name
 
-def zfs_list(if_snapshots):
+def zfs_list(dataset_name, if_snapshots):
     
     returned_list = []
     if_snapshots = ""
@@ -64,6 +58,5 @@ def zfs_list(if_snapshots):
 # Main
 #
 
-returned_list = zfs_list(if_snapshots)
 
 
