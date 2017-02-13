@@ -11,7 +11,7 @@ from fabric.api import *
 class Zfs:
 
     #
-    # takes:    String <dataset_name.
+    # takes:    String <dataset_name>
     #
     def __init__(self, dataset_name):
         self.dataset_name = dataset_name
@@ -35,7 +35,14 @@ class Zfs:
 
         return returned_list
 
+    def snapshot(self, snapshot_name):
+        confirm_snapshot = ""
 
+        with quiet():
+            snapshot = local('zfs snapshot ' + snapshot_name, capture=True)
+        
+            confirm_snapshot = local('zfs list -t snapshot | grep ' + snapshot_name, capture=True)
 
-
-
+            if confirm_snapshot:
+                return True
+        

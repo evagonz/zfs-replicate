@@ -86,7 +86,8 @@ print zfs_test.list()
 # Snapshot
 print zfs_test.list(snapshot=True)
 
-
+# Take snapshot
+print zfs_test.snapshot()
 
 
 
