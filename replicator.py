@@ -3,77 +3,90 @@
 # Replicate all the things
 #
 
-import logging
-from logging.config import dictConfig
+"""ZFS Replicator
+
+Usage:
+  replicator.py <dataset_name>
+  replicator.py (-h | --help)
+  replicator.py --version
+
+Options:
+  -h --help     Show this screen.
+  --version     Show version.
+
+"""
+
+
+from docopt import docopt
 from fabric.api import *
-from fabric.tasks import execute
-from fabric.state import env, output
+from logging.config import dictConfig
+
+import logging
 import os
-import libzfs_core
+import sys
 import yaml
+
+# Add to module search path
+app_root = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, app_root + "/lib")
+
+import zfs # TODO: This name sucks
+
+
 
 
 #
 # Bootstrap
 #
-app_root = os.path.dirname(os.path.abspath(__file__))
 config_path = os.path.join(app_root, 'conf/config.yml')
 if not os.path.isfile(config_path):
     print "ERROR - Config file not found at: " + config_path + ". Exiting"
     exit()
 
-
-#
 # Load config
 #    TODO: Exit on failure
 with open(config_path, 'r') as ymlfile:
     cfg = yaml.load(ymlfile)
 
-
-#
 # Get logger
 #    TODO: Exit on failure
 logging.config.dictConfig(cfg['logging'])
 log = logging.getLogger('replicator_log')
 
+#
+# TODO: Consider ensuring that the user is root?
+#
+
 
 
 
 #
-# Test function using Fabric
+# Handle input using docopt
 #
-def dataset_exists(dataset):
-    
-    ret_list = []
+arguments = docopt(__doc__, version='Zfs Replicator 0.1')
 
-    try:
-        # Fabric context to silence verbose messages
-        # and not abort on command failure
-        with quiet():
-            ret = local('zfs list -H -o name ' + dataset, capture=True)
-
-        # Build output struct
-        for line in ret.splitlines():
-            ret_list.append(line)
-
-        # Struct should contain exactly one line and match
-        # the input dataset name
-        if len(ret_list) == 1 and dataset == ret_list[0]:
-            return True
-
-    except FabricException:
-        return False
+if not arguments['<dataset_name>'] :
+    log.error("Missing mandatory argument <dataset_name>. Exiting.")
+    sys.exit()
+else:
+    dataset_name = arguments['<dataset_name>']
 
 
 
 
 #
 # Main
+# TODO: These should essentially become unit tests
 #
-if dataset_exists("tank/test_dataset_1"):
-    log.info("FOUND DATASET")
-else:
-    log.error("DATASET NOT FOUND")
+zfs_test = zfs.Zfs(dataset_name)
+
+# Dataset
+print zfs_test.list()
+
+# Snapshot
+print zfs_test.list(snapshot=True)
+
+
 
 
 
