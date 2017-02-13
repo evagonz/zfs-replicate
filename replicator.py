@@ -6,7 +6,7 @@
 """ZFS Replicator
 
 Usage:
-  replicator.py <dataset_name>
+  replicator.py <dataset_name> <snapshot_name>
   replicator.py (-h | --help)
   replicator.py --version
 
@@ -65,12 +65,12 @@ log = logging.getLogger('replicator_log')
 #
 arguments = docopt(__doc__, version='Zfs Replicator 0.1')
 
-if not arguments['<dataset_name>'] :
-    log.error("Missing mandatory argument <dataset_name>. Exiting.")
-    sys.exit()
-else:
-    dataset_name = arguments['<dataset_name>']
-
+#if not arguments['<dataset_name>', '<snapshot_name>'] :
+#    log.error("Missing mandatory argument <dataset_name> and/or <snapshot_name>. Exiting.")
+#    sys.exit()
+#else:
+dataset_name = arguments['<dataset_name>']
+snapshot_name = arguments['<snapshot_name>']
 
 
 
@@ -78,7 +78,7 @@ else:
 # Main
 # TODO: These should essentially become unit tests
 #
-zfs_test = zfs.Zfs(dataset_name)
+zfs_test = zfs.Zfs(dataset_name, snapshot_name)
 
 # Dataset
 print zfs_test.list()
