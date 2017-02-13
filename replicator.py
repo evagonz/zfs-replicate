@@ -3,9 +3,25 @@
 # Replicate all the things
 #
 
+"""ZFS Replicator
+
+Usage:
+  replicator.py <dataset_name>
+  replicator.py (-h | --help)
+  replicator.py --version
+
+Options:
+  -h --help     Show this screen.
+  --version     Show version.
+
+"""
+
+
+from docopt import docopt
 from fabric.api import *
-import logging
 from logging.config import dictConfig
+
+import logging
 import os
 import sys
 import yaml
@@ -37,18 +53,23 @@ with open(config_path, 'r') as ymlfile:
 logging.config.dictConfig(cfg['logging'])
 log = logging.getLogger('replicator_log')
 
+#
+# TODO: Consider ensuring that the user is root?
+#
+
 
 
 
 #
-# Handle input
+# Handle input using docopt
 #
+arguments = docopt(__doc__, version='Zfs Replicator 0.1')
 
-if len(sys.argv) < 2:
-    log.error("Missing mandatory argument dataset_name. Exiting.")
+if not arguments['<dataset_name>'] :
+    log.error("Missing mandatory argument <dataset_name>. Exiting.")
     sys.exit()
 else:
-    dataset_name = sys.argv[1]
+    dataset_name = arguments['<dataset_name>']
 
 
 
@@ -64,11 +85,6 @@ print zfs_test.list()
 
 # Snapshot
 print zfs_test.list(snapshot=True)
-
-
-
-
-
 
 
 
