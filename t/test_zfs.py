@@ -39,8 +39,8 @@ class TestZfs:
 
     # Snapshot list returns expected result
     def test_zfs_list_snapshot(self, zfs_instance):
-        assert zfs_instance.list(snapshot=True) == ["tank/snaps@20170207T1032"]
+        assert zfs_instance.list(type_snapshot=True) == ["tank/snaps@20170207T1032"]
 
-
+    # 
 
         
