@@ -74,6 +74,7 @@ snapshot_name = arguments['<snapshot_name>']
 
 
 
+
 #
 # Main
 # TODO: These should essentially become unit tests
@@ -84,7 +85,10 @@ zfs_test = zfs.Zfs(dataset_name, snapshot_name)
 print zfs_test.list()
 
 # Snapshot
-print zfs_test.list(snapshot=True)
+print zfs_test.list(type_snapshot=True)
+
+# Existance
+print zfs_test.exists("tank/snaps@20170207T1032", type_snapshot=True)
 
 # Take snapshot
 print zfs_test.snapshot()
