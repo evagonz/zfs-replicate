@@ -67,8 +67,8 @@ class Zfs:
         snapshot = local('zfs snapshot ' + self.dataset_name + snapshot_name, capture=True)
         
             # Use methods, rather than system calls to confirm
-        confirm_snapshot = self.exists(snapshot_name, type_snapshot=True)
-
+        confirm_snapshot = self.exists(self.dataset_name + snapshot_name, type_snapshot=True)
+        
         if confirm_snapshot:
             return True
         else:
