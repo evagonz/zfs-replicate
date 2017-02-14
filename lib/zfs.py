@@ -10,11 +10,10 @@ from fabric.api import *
 
 class Zfs:
     #
-    # takes:    String <dataset_name> <snapshot_name>
+    # takes:    String <dataset_name> 
     #
-    def __init__(self, dataset_name, snapshot_name):
+    def __init__(self, dataset_name):
         self.dataset_name = dataset_name
-        self.snapshot_name = snapshot_name
 
 
     #
@@ -62,13 +61,13 @@ class Zfs:
     #
     # returns:  Boolean
     #
-    def snapshot(self):
+    def snapshot(self, snapshot_name):
         with quiet():
             # Take the shot
-            snapshot = local('zfs snapshot ' + self.snapshot_name, capture=True)
+            snapshot = local('zfs snapshot ' + snapshot_name, capture=True)
         
             # Use methods, rather than system calls to confirm
-            confirm_snapshot = self.exists(self.snapshot_name, type_snapshot=True)
+            confirm_snapshot = self.exists(snapshot_name, type_snapshot=True)
 
             if confirm_snapshot:
                 return True

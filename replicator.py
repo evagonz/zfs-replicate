@@ -6,7 +6,7 @@
 """ZFS Replicator
 
 Usage:
-  replicator.py <dataset_name> <snapshot_name>
+  replicator.py <dataset_name> <snapshot_name> 
   replicator.py (-h | --help)
   replicator.py --version
 
@@ -79,7 +79,7 @@ snapshot_name = arguments['<snapshot_name>']
 # Main
 # TODO: These should essentially become unit tests
 #
-zfs_test = zfs.Zfs(dataset_name, snapshot_name)
+zfs_test = zfs.Zfs(dataset_name)
 
 # Dataset
 print zfs_test.list()
@@ -91,7 +91,7 @@ print zfs_test.list(type_snapshot=True)
 print zfs_test.exists("tank/snaps@20170207T1032", type_snapshot=True)
 
 # Take snapshot
-print zfs_test.snapshot()
+print zfs_test.snapshot(snapshot_name)
 
 
 
