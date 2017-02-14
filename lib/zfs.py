@@ -62,17 +62,17 @@ class Zfs:
     # returns:  Boolean
     #
     def snapshot(self, snapshot_name):
-        with quiet():
+        #with quiet():
             # Take the shot
-            snapshot = local('zfs snapshot ' + snapshot_name, capture=True)
+        snapshot = local('zfs snapshot ' + self.dataset_name + snapshot_name, capture=True)
         
             # Use methods, rather than system calls to confirm
-            confirm_snapshot = self.exists(snapshot_name, type_snapshot=True)
+        confirm_snapshot = self.exists(snapshot_name, type_snapshot=True)
 
-            if confirm_snapshot:
-                return True
-            else:
-                return False
+        if confirm_snapshot:
+            return True
+        else:
+            return False
         
 
 
