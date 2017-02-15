@@ -43,7 +43,7 @@ class TestZfs:
 
     # Snapshot take returns expected result 
     def test_zfs_snapshot(self, zfs_instance):
-        assert self.exists("tank/snaps@test")
+        assert zfs_instance.exists("tank/snaps@test", type_snapshot=True)
 
     # Snapshot does in fact exist
     def test_zfs_confirm_snapshot(self, zfs_instance):
