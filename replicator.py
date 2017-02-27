@@ -78,7 +78,10 @@ else:
 # Main
 # TODO: These should essentially become unit tests
 #
-zfs_test = zfs.Zfs(dataset_name)
+remote = { 'host': '172.27.6.232' }
+#remote = '172.27.6.232'
+zfs_test = zfs.Zfs(dataset_name, remote_host=remote, is_remote=True)
+#zfs_test = zfs.Zfs(dataset_name)
 
 # Dataset
 print zfs_test.list()
