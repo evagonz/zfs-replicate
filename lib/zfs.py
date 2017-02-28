@@ -109,7 +109,7 @@ class Zfs:
     def snapshot(self, snapshot_name):
         with quiet():
             # Take the shot
-            snapshot = local('zfs snapshot ' + self.dataset_name + snapshot_name, capture=True)
+            snapshot = self._cmd_abstract('zfs snapshot ' + self.dataset_name + snapshot_name, capture=True)
         
             # Use methods, rather than system calls to confirm
             confirm_snapshot = self.exists(self.dataset_name + snapshot_name, type_snapshot=True)
