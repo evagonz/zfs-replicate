@@ -19,7 +19,7 @@ logging:
             class : logging.FileHandler
             formatter: simpleFormater
             level: WARNING
-            filename: /home/jdsouza/Documents/scripts/zfs_replicator/log/replicator.log
+            filename: /home/econnors/gitstuff/zfs-replicate/log/replicator.log
     
     loggers:
         replicator_log:

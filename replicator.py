@@ -6,7 +6,7 @@
 """ZFS Replicator
 
 Usage:
-  replicator.py <dataset_name>
+  replicator.py <dataset_name> <snapshot_name> 
   replicator.py (-h | --help)
   replicator.py --version
 
@@ -65,11 +65,12 @@ log = logging.getLogger('replicator_log')
 #
 arguments = docopt(__doc__, version='Zfs Replicator 0.1')
 
-if not arguments['<dataset_name>'] :
-    log.error("Missing mandatory argument <dataset_name>. Exiting.")
-    sys.exit()
-else:
-    dataset_name = arguments['<dataset_name>']
+#if not arguments['<dataset_name>', '<snapshot_name>'] :
+#    log.error("Missing mandatory argument <dataset_name> and/or <snapshot_name>. Exiting.")
+#    sys.exit()
+#else:
+dataset_name = arguments['<dataset_name>']
+snapshot_name = arguments['<snapshot_name>']
 
 
 
@@ -87,9 +88,14 @@ zfs_test = zfs.Zfs(dataset_name, remote_host=remote, is_remote=True)
 print zfs_test.list()
 
 # Snapshot
-print zfs_test.list(snapshot=True)
+print zfs_test.list(type_snapshot=True)
 
+# Existance
+print zfs_test.exists("tank/snaps@20170207T1032", type_snapshot=True)
+print zfs_test.exists("tank/snaps")
 
+# Take snapshot
+#print zfs_test.snapshot(snapshot_name)
 
 
 
