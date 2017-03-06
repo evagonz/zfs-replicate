@@ -20,18 +20,14 @@ import zfs
 # Creates new dataset 'tank/zfsreptest.' Requires zpool tank to
 # already exist.
 
-@pytest.fixture(scope="class", autouse=True)
+@pytest.fixture(scope="session", autouse=True)
 def zfs_instance(request):
     local('zfs create tank/zfsreptest')
-    return zfs.Zfs("tank/zfsreptest",is_remote=False)
+    yield zfs.Zfs("tank/zfsreptest",is_remote=False)
     
-    def fin():
-        print "teardown zfs_instance"
-        local('zfs destroy tank/zfsreptest')
-        zfs_local.close()
+    # Destroy fixture when done
+    local('zfs destroy tank/zfsreptest')
 
-    request.fin()
-    return zfs_instance
 
 #
 # Zfs test class
