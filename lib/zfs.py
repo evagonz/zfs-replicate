@@ -16,7 +16,8 @@ class Zfs:
     def __init__(self, dataset_name, remote_host = None, is_remote = False):
         self.dataset_name = dataset_name
         self.is_remote = is_remote
-        self.remote_host = self._set_valid_remote_host(remote_host)
+        if self.is_remote:
+            self.remote_host = self._set_valid_remote_host(remote_host)
 
         # Do a bunch of logic to test the remote host?
 

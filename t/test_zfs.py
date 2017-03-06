@@ -20,15 +20,17 @@ import zfs
 # Creates new dataset 'tank/zfsreptest.' Requires zpool tank to
 # already exist.
 
-@pytest.fixture(scope="session")
-def zfs_instance():
+@pytest.fixture(scope="class", autouse=True)
+def zfs_instance(request):
     local('zfs create tank/zfsreptest')
-    return zfs.Zfs("tank/zfsreptest")
+    return zfs.Zfs("tank/zfsreptest",is_remote=False)
     
     def fin():
-        print ("teardown tank/zfsreptest")
-        zfs_instance.close()
-    request.addfinalizer(fin)
+        print "teardown zfs_instance"
+        local('zfs destroy tank/zfsreptest')
+        zfs_local.close()
+
+    request.fin()
     return zfs_instance
 
 #
@@ -43,17 +45,5 @@ class TestZfs:
     # List returns expected result
     def test_zfs_list(self, zfs_instance):
         assert zfs_instance.list() == ["tank/zfsreptest"]
-
-    # Snapshot list returns expected result
-    def test_zfs_list_snapshot(self, zfs_instance):
-        assert zfs_instance.list(type_snapshot=True) == ["tank/snaps@20170207T1032"]
-
-    # Snapshot take returns expected result 
-    def test_zfs_snapshot(self, zfs_instance):
-        assert zfs_instance.exists("tank/snaps@test", type_snapshot=True)
-
-    # Snapshot does in fact exist
-    def test_zfs_confirm_snapshot(self, zfs_instance):
-        assert zfs_instance.snapshot("@test") == True
 
 
