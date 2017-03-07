@@ -3,6 +3,7 @@
 import os
 import sys
 import pytest
+from fabric.api import *
 
 # Add to module search path
 app_root = os.path.dirname(os.path.abspath(__file__))
@@ -14,14 +15,16 @@ import zfs
 #
 # Setup "fixture" for dependency injection in test methods
 #
-# Requires a zpool "tank/snaps". As we complete various methods
-# we can start by controlling the build of the necessary test 
-# environment here. For example, creating a known zpool first, 
-# or creating a snapshot by a known name.
-#
-@pytest.fixture
-def zfs_instance():
-    return zfs.Zfs("tank/snaps")
+# Creates new dataset 'tank/zfsreptest.' Requires zpool tank to
+# already exist.
+
+@pytest.fixture(scope="class", autouse=True)
+def zfs_instance(request):
+    local('zfs create tank/zfsreptest')
+    yield zfs.Zfs("tank/zfsreptest",is_remote=False)
+    
+    # Destroy fixture when done
+    local('zfs destroy -r tank/zfsreptest')
 
 
 #
@@ -35,16 +38,9 @@ class TestZfs:
 
     # List returns expected result
     def test_zfs_list(self, zfs_instance):
-        assert zfs_instance.list() == ["tank/snaps"]
-
-    # Snapshot list returns expected result
-    def test_zfs_list_snapshot(self, zfs_instance):
-        assert zfs_instance.list(type_snapshot=True) == ["tank/snaps@20170207T1032"]
-
-    # Snapshot take returns expected result 
+        assert zfs_instance.list() == ["tank/zfsreptest"]
+    
+    # Snapshot is taken successfully
     def test_zfs_snapshot(self, zfs_instance):
-        assert zfs_instance.exists("tank/snaps@test", type_snapshot=True)
-
-    # Snapshot does in fact exist
-    def test_zfs_confirm_snapshot(self, zfs_instance):
-        assert zfs_instance.snapshot("@test") == True
+        zfs_instance.snapshot("@testsnap")
+        assert zfs_instance.exists("tank/zfsreptest@testsnap", type_snapshot=True) == True

@@ -79,9 +79,9 @@ snapshot_name = arguments['<snapshot_name>']
 # Main
 # TODO: These should essentially become unit tests
 #
-remote = { 'host': '172.27.6.232' }
+remote = { 'host': '172.27.6.148' }
 #remote = '172.27.6.232'
-zfs_test = zfs.Zfs(dataset_name, remote_host=remote, is_remote=True)
+zfs_test = zfs.Zfs(dataset_name, remote_host=remote, is_remote=False)
 #zfs_test = zfs.Zfs(dataset_name)
 
 # Dataset
@@ -95,7 +95,7 @@ print zfs_test.exists("tank/snaps@20170207T1032", type_snapshot=True)
 print zfs_test.exists("tank/snaps")
 
 # Take snapshot
-#print zfs_test.snapshot(snapshot_name)
+print zfs_test.snapshot(snapshot_name)
 
 
 

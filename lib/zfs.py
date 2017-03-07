@@ -16,7 +16,8 @@ class Zfs:
     def __init__(self, dataset_name, remote_host = None, is_remote = False):
         self.dataset_name = dataset_name
         self.is_remote = is_remote
-        self.remote_host = self._set_valid_remote_host(remote_host)
+        if self.is_remote:
+            self.remote_host = self._set_valid_remote_host(remote_host)
 
         # Do a bunch of logic to test the remote host?
 
@@ -54,7 +55,7 @@ class Zfs:
             env.key_filename = self.remote_host['keyfile']
             res = run(cmd)
         else:
-            res = local(cmd, capture=True)
+            res = local(cmd,capture=True)
 
         return res
 
@@ -109,7 +110,7 @@ class Zfs:
     def snapshot(self, snapshot_name):
         with quiet():
             # Take the shot
-            snapshot = self._cmd_abstract('zfs snapshot ' + self.dataset_name + snapshot_name, capture=True)
+            snapshot = self._cmd_abstract('zfs snapshot ' + self.dataset_name + snapshot_name)
         
             # Use methods, rather than system calls to confirm
             confirm_snapshot = self.exists(self.dataset_name + snapshot_name, type_snapshot=True)
