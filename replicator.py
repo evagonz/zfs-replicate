@@ -95,7 +95,7 @@ print zfs_test.exists("tank/snaps@20170207T1032", type_snapshot=True)
 print zfs_test.exists("tank/snaps")
 
 # Take snapshot
-#print zfs_test.snapshot(snapshot_name)
+print zfs_test.snapshot(snapshot_name)
 
 
 

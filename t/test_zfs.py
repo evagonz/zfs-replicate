@@ -4,8 +4,6 @@ import os
 import sys
 import pytest
 from fabric.api import *
-from fabric.tasks import execute
-from fabric.state import env, output
 
 # Add to module search path
 app_root = os.path.dirname(os.path.abspath(__file__))
@@ -20,13 +18,13 @@ import zfs
 # Creates new dataset 'tank/zfsreptest.' Requires zpool tank to
 # already exist.
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope="class", autouse=True)
 def zfs_instance(request):
     local('zfs create tank/zfsreptest')
     yield zfs.Zfs("tank/zfsreptest",is_remote=False)
     
     # Destroy fixture when done
-    local('zfs destroy tank/zfsreptest')
+    local('zfs destroy -r tank/zfsreptest')
 
 
 #
@@ -41,5 +39,8 @@ class TestZfs:
     # List returns expected result
     def test_zfs_list(self, zfs_instance):
         assert zfs_instance.list() == ["tank/zfsreptest"]
-
-
+    
+    # Snapshot is taken successfully
+    def test_zfs_snapshot(self, zfs_instance):
+        zfs_instance.snapshot("@testsnap")
+        assert zfs_instance.exists("tank/zfsreptest@testsnap", type_snapshot=True) == True
