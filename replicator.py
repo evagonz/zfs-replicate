@@ -35,68 +35,86 @@ import zfs # TODO: This name sucks
 
 
 
+def main():
+
+    #
+    # Bootstrap
+    #
+    config_path = os.path.join(app_root, 'conf/config.yml')
+    if not os.path.isfile(config_path):
+        print "ERROR - Config file not found at: " + config_path + ". Exiting"
+        exit()
+
+    # Load config
+    #    TODO: Exit on failure
+    with open(config_path, 'r') as ymlfile:
+        cfg = yaml.load(ymlfile)
+
+    # Get logger
+    #    TODO: Exit on failure
+    logging.config.dictConfig(cfg['logging'])
+    log = logging.getLogger('replicator_log')
+    log.info("ZFS REPLICATOR START");
+
+    #
+    # TODO: Consider ensuring that the user is root?
+    #
+
+
+
+
+    #
+    # Handle input using docopt
+    #
+    arguments = docopt(__doc__, version='Zfs Replicator 0.1')
+
+    #if not arguments['<dataset_name>', '<snapshot_name>'] :
+    #    log.error("Missing mandatory argument <dataset_name> and/or <snapshot_name>. Exiting.")
+    #    sys.exit()
+    #else:
+    dataset_name = arguments['<dataset_name>']
+    snapshot_name = arguments['<snapshot_name>']
+
+
+
+
+    #
+    # TODO: These should essentially become unit tests
+    #
+    remote = { 'host': '172.27.6.148' }
+    #remote = '172.27.6.232'
+    zfs_test = zfs.Zfs(dataset_name, remote_host=remote, is_remote=False)
+    #zfs_test = zfs.Zfs(dataset_name)
+
+    # Dataset
+    print zfs_test.list()
+
+    # Snapshot
+    print zfs_test.list(type_snapshot=True)
+
+    # Existance
+    print zfs_test.exists("tank/snaps@20170207T1032", type_snapshot=True)
+    print zfs_test.exists("tank/snaps")
+
+    # Take snapshot
+    print zfs_test.snapshot(snapshot_name)
+
+
+
+
 #
-# Bootstrap
+# Return the correct log path based on current location
 #
-config_path = os.path.join(app_root, 'conf/config.yml')
-if not os.path.isfile(config_path):
-    print "ERROR - Config file not found at: " + config_path + ". Exiting"
-    exit()
-
-# Load config
-#    TODO: Exit on failure
-with open(config_path, 'r') as ymlfile:
-    cfg = yaml.load(ymlfile)
-
-# Get logger
-#    TODO: Exit on failure
-logging.config.dictConfig(cfg['logging'])
-log = logging.getLogger('replicator_log')
-
-#
-# TODO: Consider ensuring that the user is root?
-#
+def get_log_name():
+    path = os.path.dirname(os.path.realpath(__file__))
+    path = os.path.join(path, 'log/zfs_replicator.log')
+    return logging.FileHandler(path)
 
 
 
 
-#
-# Handle input using docopt
-#
-arguments = docopt(__doc__, version='Zfs Replicator 0.1')
-
-#if not arguments['<dataset_name>', '<snapshot_name>'] :
-#    log.error("Missing mandatory argument <dataset_name> and/or <snapshot_name>. Exiting.")
-#    sys.exit()
-#else:
-dataset_name = arguments['<dataset_name>']
-snapshot_name = arguments['<snapshot_name>']
-
-
-
-
-#
-# Main
-# TODO: These should essentially become unit tests
-#
-remote = { 'host': '172.27.6.148' }
-#remote = '172.27.6.232'
-zfs_test = zfs.Zfs(dataset_name, remote_host=remote, is_remote=False)
-#zfs_test = zfs.Zfs(dataset_name)
-
-# Dataset
-print zfs_test.list()
-
-# Snapshot
-print zfs_test.list(type_snapshot=True)
-
-# Existance
-print zfs_test.exists("tank/snaps@20170207T1032", type_snapshot=True)
-print zfs_test.exists("tank/snaps")
-
-# Take snapshot
-print zfs_test.snapshot(snapshot_name)
-
+if __name__ == '__main__':
+        main()
 
 
 

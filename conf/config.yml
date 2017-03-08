@@ -16,10 +16,9 @@ logging:
             level: DEBUG
             stream: ext://sys.stdout
         file:
-            class : logging.FileHandler
+            (): __main__.get_log_name
             formatter: simpleFormater
-            level: WARNING
-            filename: /home/econnors/gitstuff/zfs-replicate/log/replicator.log
+            level: INFO
     
     loggers:
         replicator_log:
