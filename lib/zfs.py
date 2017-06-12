@@ -119,7 +119,15 @@ class Zfs:
                 return True
             else:
                 return False
-        
+    
+    #
+    #
+    #
+    #
+    #
+    def send_recv(self, remote_zfs_host):
+
+        print remote_zfs_host.dataset_name
 
 
 

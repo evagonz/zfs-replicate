@@ -28,5 +28,4 @@ PyYAML==3.12
 requests==2.9.1
 six==1.10.0
 urllib3==1.13.1
-vboxapi==1.0
 voluptuous==0.9.3

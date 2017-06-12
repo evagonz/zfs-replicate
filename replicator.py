@@ -83,7 +83,7 @@ def main():
     #
     remote = { 'host': '172.27.6.148' }
     #remote = '172.27.6.232'
-    zfs_test = zfs.Zfs(dataset_name, remote_host=remote, is_remote=False)
+    zfs_test = zfs.Zfs(dataset_name, remote_host=remote, is_remote=True)
     #zfs_test = zfs.Zfs(dataset_name)
 
     # Dataset
@@ -99,7 +99,11 @@ def main():
     # Take snapshot
     print zfs_test.snapshot(snapshot_name)
 
+    # Send snapshot (eventually)
+    local_test = zfs.Zfs("tank/snaps")
+    remote_test = zfs.Zfs("tank/test_dataset_1", remote_host=remote, is_remote=True)
 
+    local_test.send_recv(remote_test)
 
 
 #
