@@ -16,6 +16,7 @@ class Zfs:
     def __init__(self, dataset_name, remote_host = None, is_remote = False):
         self.dataset_name = dataset_name
         self.is_remote = is_remote
+        self.snapshot_name = None 
         if self.is_remote:
             self.remote_host = self._set_valid_remote_host(remote_host)
 
@@ -116,22 +117,17 @@ class Zfs:
             confirm_snapshot = self.exists(self.dataset_name + snapshot_name, type_snapshot=True)
         
             if confirm_snapshot:
+                self.snapshot_name = snapshot_name
                 return True
             else:
                 return False
     
     #
+    # takes:    Object
     #
-    #
-    #
+    # returns:  None
     #
     def send_recv(self, remote_zfs_host):
-
-        print remote_zfs_host.dataset_name
-
-
-
-
-
-
-
+        
+        ssh_host = remote_zfs_host.remote_host["host"]
+        print self._cmd_abstract("zfs send " + self.dataset_name + self.snapshot_name + " | ssh root@" + ssh_host + " zfs recv " + remote_zfs_host.dataset_name + self.snapshot_name)

@@ -81,10 +81,7 @@ def main():
     #
     # TODO: These should essentially become unit tests
     #
-    remote = { 'host': '172.27.6.148' }
-    #remote = '172.27.6.232'
-    zfs_test = zfs.Zfs(dataset_name, remote_host=remote, is_remote=True)
-    #zfs_test = zfs.Zfs(dataset_name)
+    zfs_test = zfs.Zfs(dataset_name)
 
     # Dataset
     print zfs_test.list()
@@ -92,18 +89,13 @@ def main():
     # Snapshot
     print zfs_test.list(type_snapshot=True)
 
-    # Existance
-    print zfs_test.exists("tank/snaps@20170207T1032", type_snapshot=True)
-    print zfs_test.exists("tank/snaps")
-
     # Take snapshot
     print zfs_test.snapshot(snapshot_name)
 
     # Send snapshot (eventually)
-    local_test = zfs.Zfs("tank/snaps")
-    remote_test = zfs.Zfs("tank/test_dataset_1", remote_host=remote, is_remote=True)
+    remote_test = zfs.Zfs("tank/test_dataset_3", remote_host={ 'host': '172.27.6.148'}, is_remote=True)
 
-    local_test.send_recv(remote_test)
+    zfs_test.send_recv(remote_test)
 
 
 #
