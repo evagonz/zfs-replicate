@@ -93,9 +93,9 @@ def main():
     print zfs_test.snapshot(snapshot_name)
 
     # Send snapshot (eventually)
-    remote_test = zfs.Zfs("tank/test_dataset_3", remote_host={ 'host': '172.27.6.148'}, is_remote=True)
+    remote_test = zfs.Zfs("tank/test_dataset_4", remote_host={ 'host': '172.27.6.148'}, is_remote=True)
 
-    zfs_test.send_recv(remote_test)
+    zfs_test.send_recv(remote_test, incremental=True, previous_snapshot_name="@20170613T1250")
 
 
 #

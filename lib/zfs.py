@@ -127,7 +127,13 @@ class Zfs:
     #
     # returns:  None
     #
-    def send_recv(self, remote_zfs_host):
-        
+    def send_recv(self, remote_zfs_host, incremental = False, previous_snapshot_name = None):
+               
         ssh_host = remote_zfs_host.remote_host["host"]
-        print self._cmd_abstract("zfs send " + self.dataset_name + self.snapshot_name + " | ssh root@" + ssh_host + " zfs recv " + remote_zfs_host.dataset_name + self.snapshot_name)
+
+        if incremental:
+            print self._cmd_abstract("zfs send -i " + self.dataset_name + previous_snapshot_name + " " + self.dataset_name + self.snapshot_name + " | ssh root@" + ssh_host + " zfs recv " + remote_zfs_host.dataset_name + self.snapshot_name)
+            return True
+        else:
+            print self._cmd_abstract("zfs send " + self.dataset_name + self.snapshot_name + " | ssh root@" + ssh_host + " zfs recv " + remote_zfs_host.dataset_name + self.snapshot_name)
+            return False
