@@ -16,6 +16,7 @@ class Zfs:
     def __init__(self, dataset_name, remote_host = None, is_remote = False):
         self.dataset_name = dataset_name
         self.is_remote = is_remote
+        self.snapshot_name = None 
         if self.is_remote:
             self.remote_host = self._set_valid_remote_host(remote_host)
 
@@ -116,14 +117,32 @@ class Zfs:
             confirm_snapshot = self.exists(self.dataset_name + snapshot_name, type_snapshot=True)
         
             if confirm_snapshot:
+                self.snapshot_name = snapshot_name
                 return True
             else:
                 return False
+    
+    #
+    # takes:    Object
+    #
+    # returns:  None
+    #
+    def send_recv(self, remote_zfs_host, incremental = False, previous_snapshot_name = None):
+               
+        ssh_host = remote_zfs_host.remote_host["host"]
+
+        if incremental:
+            self._cmd_abstract("zfs send -i " + self.dataset_name + previous_snapshot_name + " " + self.dataset_name + self.snapshot_name + " | ssh root@" + ssh_host + " zfs recv " + remote_zfs_host.dataset_name + self.snapshot_name)
+            return True
+        else:
+            self._cmd_abstract("zfs send " + self.dataset_name + self.snapshot_name + " | ssh root@" + ssh_host + " zfs recv " + remote_zfs_host.dataset_name + self.snapshot_name)
+            return False
+
+    #
+    # 
+    #
+    #
+    #
+    def delete_snapshot(self, dataset_name, snapshot_to_delete):
         
-
-
-
-
-
-
-
+        self._cmd_abstract("zfs destroy " + self.dataset_name + snapshot_to_delete)

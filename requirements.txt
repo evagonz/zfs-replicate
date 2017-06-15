@@ -2,6 +2,7 @@ appdirs==1.4.0
 boto==2.38.0
 cffi==1.9.1
 chardet==2.3.0
+configargparse==0.12.0
 cryptography==1.7.2
 docopt==0.6.2
 duplicity==0.7.6
@@ -28,5 +29,4 @@ PyYAML==3.12
 requests==2.9.1
 six==1.10.0
 urllib3==1.13.1
-vboxapi==1.0
 voluptuous==0.9.3
