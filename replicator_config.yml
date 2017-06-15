@@ -1,7 +1,5 @@
----
+zfs_data:
+    local_dataset: 'tank/snaps'
+    remote_dataset: 'tank/scripttest'
+    incremental: True
 
-- dataset_name: 'tank/snaps'
-- snapshot_name: '@20170615T1024'
-- previous_snapshot_name: '@20170613T1253'
-- incremental: True
-- snapshot_to_delete: '@20170615T0947'

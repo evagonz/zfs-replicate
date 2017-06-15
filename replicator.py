@@ -25,7 +25,7 @@ import logging
 import os
 import sys
 import yaml
-
+import datetime
 
 # Add to module search path
 app_root = os.path.dirname(os.path.abspath(__file__))
@@ -62,12 +62,13 @@ def main():
     #
 
     #
-    # Use command-line yaml config file
+    # Use command-line yaml config file 
     #
 
     with open("replicator_config.yml", 'r') as zfsconffile:
-                config = yaml.load(zfsconffile)
-
+        config = yaml.load(zfsconffile)
+    
+        print config['zfs_data']['local_dataset'] 
 
     #
     # Handle input using docopt
@@ -88,20 +89,14 @@ def main():
     # TODO: These should essentially become unit tests
     #
     
-    dataset_name = config[0]['dataset_name']
-    snapshot_name = config[1]['snapshot_name']
-    previous_snapshot_name = config[2]['previous_snapshot_name']
-    incremental = config[3]['incremental']
-    snapshot_to_delete = config[4]['snapshot_to_delete'] 
-
-    zfs_test = zfs.Zfs(dataset_name)
+    #zfs_test = zfs.Zfs(dataset_name)
 
     # Send snapshot
-    remote_test = zfs.Zfs("tank/test_dataset_4", remote_host={ 'host': '172.27.6.148'}, is_remote=True)
+    #remote_test = zfs.Zfs("tank/test_dataset_4", remote_host={ 'host': '172.27.6.148'}, is_remote=True)
 
-    zfs_test.snapshot(snapshot_name)
-    zfs_test.send_recv(remote_test, incremental, previous_snapshot_name)
-    zfs_test.delete_snapshot(dataset_name, snapshot_to_delete)
+    #zfs_test.snapshot(snapshot_name)
+    #zfs_test.send_recv(remote_test, incremental, previous_snapshot_name)
+    #zfs_test.delete_snapshot(dataset_name, snapshot_to_delete)
 
 #
 # Return the correct log path based on current location
