@@ -92,6 +92,7 @@ def main():
     snapshot_name = config[1]['snapshot_name']
     previous_snapshot_name = config[2]['previous_snapshot_name']
     incremental = config[3]['incremental']
+    snapshot_to_delete = config[4]['snapshot_to_delete'] 
 
     zfs_test = zfs.Zfs(dataset_name)
 
@@ -100,7 +101,7 @@ def main():
 
     zfs_test.snapshot(snapshot_name)
     zfs_test.send_recv(remote_test, incremental, previous_snapshot_name)
-
+    zfs_test.delete_snapshot(dataset_name, snapshot_to_delete)
 
 #
 # Return the correct log path based on current location

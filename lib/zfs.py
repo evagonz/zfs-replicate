@@ -138,3 +138,11 @@ class Zfs:
             self._cmd_abstract("zfs send " + self.dataset_name + self.snapshot_name + " | ssh root@" + ssh_host + " zfs recv " + remote_zfs_host.dataset_name + self.snapshot_name)
             return False
 
+    #
+    # 
+    #
+    #
+    #
+    def delete_snapshot(self, dataset_name, snapshot_to_delete):
+        
+        self._cmd_abstract("zfs destroy " + self.dataset_name + snapshot_to_delete)
