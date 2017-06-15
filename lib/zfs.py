@@ -132,8 +132,9 @@ class Zfs:
         ssh_host = remote_zfs_host.remote_host["host"]
 
         if incremental:
-            print self._cmd_abstract("zfs send -i " + self.dataset_name + previous_snapshot_name + " " + self.dataset_name + self.snapshot_name + " | ssh root@" + ssh_host + " zfs recv " + remote_zfs_host.dataset_name + self.snapshot_name)
+            self._cmd_abstract("zfs send -i " + self.dataset_name + previous_snapshot_name + " " + self.dataset_name + self.snapshot_name + " | ssh root@" + ssh_host + " zfs recv " + remote_zfs_host.dataset_name + self.snapshot_name)
             return True
         else:
-            print self._cmd_abstract("zfs send " + self.dataset_name + self.snapshot_name + " | ssh root@" + ssh_host + " zfs recv " + remote_zfs_host.dataset_name + self.snapshot_name)
+            self._cmd_abstract("zfs send " + self.dataset_name + self.snapshot_name + " | ssh root@" + ssh_host + " zfs recv " + remote_zfs_host.dataset_name + self.snapshot_name)
             return False
+
