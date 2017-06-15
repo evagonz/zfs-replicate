@@ -3,18 +3,18 @@
 # Replicate all the things
 #
 
-#"""ZFS Replicator
-#
-#Usage:
-#  replicator.py <dataset_name> <snapshot_name> 
-#  replicator.py (-h | --help)
-#  replicator.py --version
-#
-#Options:
-#  -h --help     Show this screen.
-#  --version     Show version.
-#
-#"""
+"""ZFS Replicator
+
+Usage:
+  replicator.py <zfs_config>
+  replicator.py (-h | --help)
+  replicator.py --version
+
+Options:
+  -h --help     Show this screen.
+  --version     Show version.
+
+"""
 
 
 from docopt import docopt
@@ -73,15 +73,22 @@ def main():
     #
     # Handle input using docopt
     #
-    #arguments = docopt(__doc__, version='Zfs Replicator 0.1')
+    arguments = docopt(__doc__, version='Zfs Replicator 0.1')
 
-    #if not arguments['<dataset_name>', '<snapshot_name>'] :
-    #    log.error("Missing mandatory argument <dataset_name> and/or <snapshot_name>. Exiting.")
-    #    sys.exit()
-    #else:
-    #dataset_name = arguments['<dataset_name>']
-    #snapshot_name = arguments['<snapshot_name>']
+    if not arguments['<zfs_config>'] :
+        log.error("Missing mandatory YAML config file. Exiting.")
+        sys.exit()
+    else:
+        zfs_config = arguments['<zfs_config>']
 
+    #
+    # Use command-line yaml config file 
+    #
+
+    with open(zfs_config, 'r') as zfsconffile:
+        config = yaml.load(zfsconffile)
+
+        print config['zfs_data']['local_dataset']
 
 
 
