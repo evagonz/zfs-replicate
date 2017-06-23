@@ -1,5 +1,5 @@
 zfs_data:
     local_dataset: 'tank/snaps'
     remote_dataset: 'tank/scripttest'
-    incremental: True
-
+    incremental: True|False
+    remote_host: 127.0.0.1

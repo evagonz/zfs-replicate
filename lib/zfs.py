@@ -133,16 +133,14 @@ class Zfs:
 
         if incremental:
             self._cmd_abstract("zfs send -i " + self.dataset_name + previous_snapshot_name + " " + self.dataset_name + self.snapshot_name + " | ssh root@" + ssh_host + " zfs recv " + remote_zfs_host.dataset_name + self.snapshot_name)
-            return True
         else:
             self._cmd_abstract("zfs send " + self.dataset_name + self.snapshot_name + " | ssh root@" + ssh_host + " zfs recv " + remote_zfs_host.dataset_name + self.snapshot_name)
-            return False
 
     #
     # 
     #
     #
     #
-    def delete_snapshot(self, dataset_name, snapshot_to_delete):
+    def delete_snapshot(self, snapshot_to_delete):
         
-        self._cmd_abstract("zfs destroy " + self.dataset_name + snapshot_to_delete)
+        self._cmd_abstract("zfs destroy " + snapshot_to_delete)

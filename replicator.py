@@ -88,22 +88,39 @@ def main():
     with open(zfs_config, 'r') as zfsconffile:
         config = yaml.load(zfsconffile)
 
-        print config['zfs_data']['local_dataset']
+    #
+    # Retrieve variables from config file
+    #
 
-
+    local_dataset_name = config['zfs_data']['local_dataset']
+    remote_dataset_name = config['zfs_data']['remote_dataset']
+    remote_host = config['zfs_data']['remote_host']    
+    retain = config['zfs_data']['retain']
 
     #
-    # TODO: These should essentially become unit tests
+    # Generate current & previous snapshot names
     #
     
-    #zfs_test = zfs.Zfs(dataset_name)
+    snapshot_name = datetime.datetime.now().strftime("@20%y%m%dT%H%M")
+    previous_snapshot_name = "" 
 
-    # Send snapshot
-    #remote_test = zfs.Zfs("tank/test_dataset_4", remote_host={ 'host': '172.27.6.148'}, is_remote=True)
+    #
+    # Work
+    #
 
-    #zfs_test.snapshot(snapshot_name)
-    #zfs_test.send_recv(remote_test, incremental, previous_snapshot_name)
-    #zfs_test.delete_snapshot(dataset_name, snapshot_to_delete)
+    local = zfs.Zfs(local_dataset_name)
+
+    snapshot_list = local.list(type_snapshot=config['zfs_data']['type_snapshot'])
+#    local.get_latest_snapshot(snapshot_list)
+    local.snapshot(snapshot_name)
+    
+
+    for item in snapshot_list[0:-int(retain)]:
+        snap_to_delete = item
+        local.delete_snapshot(item)
+
+    #remote = zfs.Zfs(remote_dataset_name, remote_host, is_remote = True)
+
 
 #
 # Return the correct log path based on current location
