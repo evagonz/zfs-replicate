@@ -3,3 +3,9 @@ zfs_data:
     remote_dataset: 'tank/scripttest'
     incremental: True|False
     remote_host: 127.0.0.1
+    type_snapshot: True|False
+    retain: (ex: 3)
+    remote_port: (ex: 22)
+    remote_user: (ex: root)
+    ssh_key: (ex: /root/.ssh/id_rsa)
+
