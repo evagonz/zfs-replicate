@@ -86,6 +86,14 @@ class Zfs:
 
         return returned_list
 
+    #
+    #
+    #
+    #
+    #
+    def get_latest_snapshot(self, snapshot_list):
+        latest_snapshot = snapshot_list[-1]    
+        return latest_snapshot
 
     #
     # takes:    String <search_element>, Boolean <type_snapshot>
@@ -132,7 +140,7 @@ class Zfs:
         ssh_host = remote_zfs_host.remote_host["host"]
 
         if incremental:
-            self._cmd_abstract("zfs send -i " + self.dataset_name + previous_snapshot_name + " " + self.dataset_name + self.snapshot_name + " | ssh root@" + ssh_host + " zfs recv " + remote_zfs_host.dataset_name + self.snapshot_name)
+            self._cmd_abstract("zfs send -i " + previous_snapshot_name + " " + self.dataset_name + self.snapshot_name + " | ssh root@" + ssh_host + " zfs recv " + remote_zfs_host.dataset_name + self.snapshot_name)
         else:
             self._cmd_abstract("zfs send " + self.dataset_name + self.snapshot_name + " | ssh root@" + ssh_host + " zfs recv " + remote_zfs_host.dataset_name + self.snapshot_name)
 

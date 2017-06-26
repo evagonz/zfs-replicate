@@ -1,11 +1,18 @@
-zfs_data:
-    local_dataset: 'tank/snaps'
-    remote_dataset: 'tank/scripttest'
-    incremental: True|False
-    remote_host: 127.0.0.1
-    type_snapshot: True|False
-    retain: (ex: 3)
-    remote_port: (ex: 22)
-    remote_user: (ex: root)
-    ssh_key: (ex: /root/.ssh/id_rsa)
+local_host:
+    dataset: 'tank/localexample'
+    retain: 3
 
+remote_host:
+    host_setup:
+        host: 172.27.6.148 # IP or hostname, no quotation marks
+        #these are defaulted to 22, root and /root/.ssh/id_rsa respectively;
+        #they can remain commented unless you actually need to change them
+        #port: 
+        #user:
+        #ssh_key: 
+    dataset: 'tank/remoteexample'
+    retain: 10
+
+snapshot_information:
+    incremental: True|False
+    type_snapshot: True|False 

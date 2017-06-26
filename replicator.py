@@ -68,7 +68,6 @@ def main():
     with open("replicator_config.yml", 'r') as zfsconffile:
         config = yaml.load(zfsconffile)
     
-        print config['zfs_data']['local_dataset'] 
 
     #
     # Handle input using docopt
@@ -81,45 +80,52 @@ def main():
     else:
         zfs_config = arguments['<zfs_config>']
 
-    #
-    # Use command-line yaml config file 
-    #
-
-    with open(zfs_config, 'r') as zfsconffile:
-        config = yaml.load(zfsconffile)
 
     #
     # Retrieve variables from config file
     #
 
-    local_dataset_name = config['zfs_data']['local_dataset']
-    remote_dataset_name = config['zfs_data']['remote_dataset']
-    remote_host = config['zfs_data']['remote_host']    
-    retain = config['zfs_data']['retain']
+    local_dataset_name = config['local_host']['dataset']
+    local_retain = config['local_host']['retain']
+
+    remote_host = config['remote_host']['host_setup']
+    remote_dataset_name = config['remote_host']['dataset']
+    remote_retain = config['remote_host']['retain']
+
+    is_incremental = config['snapshot_information']['incremental']
+    is_snapshot = config['snapshot_information']['type_snapshot']
 
     #
-    # Generate current & previous snapshot names
+    # Generate current snapshot name
     #
     
-    snapshot_name = datetime.datetime.now().strftime("@20%y%m%dT%H%M")
-    previous_snapshot_name = "" 
+    snapshot_name = datetime.datetime.now().strftime("@%Y%m%dT%H%M")
 
     #
     # Work
     #
 
+    # Create objects
     local = zfs.Zfs(local_dataset_name)
+    remote = zfs.Zfs(remote_dataset_name, remote_host, is_remote = True)
 
-    snapshot_list = local.list(type_snapshot=config['zfs_data']['type_snapshot'])
-#    local.get_latest_snapshot(snapshot_list)
+    # Find latest-taken snapshot (for incrementing)
+    snapshot_list = local.list(type_snapshot=is_snapshot)
+    latest_snapshot = local.get_latest_snapshot(snapshot_list)
+    
+    # Take a snapshot
     local.snapshot(snapshot_name)
     
+    # Send it; delete snaps older than retain values on local & remote servers
+    
+    local.send_recv(remote, incremental = is_incremental, previous_snapshot_name = latest_snapshot)
+    
+    if local.snapshot_name: 
+        for item in snapshot_list[0:-int(local_retain)]:
+            local.delete_snapshot(item)
 
-    for item in snapshot_list[0:-int(retain)]:
-        snap_to_delete = item
-        local.delete_snapshot(item)
-
-    #remote = zfs.Zfs(remote_dataset_name, remote_host, is_remote = True)
+        for item in snapshot_list[0:-int(remote_retain)]:
+            remote.delete_snapshot(item)
 
 
 #
