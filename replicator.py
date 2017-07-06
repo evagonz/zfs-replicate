@@ -6,14 +6,14 @@
 """ZFS Replicator
 
 Usage:
-  replicator.py <zfs_config>
+  replicator.py <zfs_config> [-t]
   replicator.py (-h | --help)
   replicator.py --version
 
 Options:
   -h --help     Show this screen.
   --version     Show version.
-
+  -t            Transfer to remote machine.
 """
 
 
@@ -72,13 +72,16 @@ def main():
     #
     # Handle input using docopt
     #
-    arguments = docopt(__doc__, version='Zfs Replicator 0.1')
+    arguments = docopt(__doc__, version='Zfs Replicator 0.7')
 
     if not arguments['<zfs_config>'] :
         log.error("Missing mandatory YAML config file. Exiting.")
         sys.exit()
     else:
         zfs_config = arguments['<zfs_config>']
+
+    if arguments['-t'] :
+        remote_transfer = True
 
 
     #
@@ -87,10 +90,6 @@ def main():
 
     local_dataset_name = config['local_host']['dataset']
     local_retain = config['local_host']['retain']
-
-    remote_host = config['remote_host']['host_setup']
-    remote_dataset_name = config['remote_host']['dataset']
-    remote_retain = config['remote_host']['retain']
 
     is_incremental = config['snapshot_information']['incremental']
     is_snapshot = config['snapshot_information']['type_snapshot']
@@ -107,7 +106,6 @@ def main():
 
     # Create objects
     local = zfs.Zfs(local_dataset_name)
-    remote = zfs.Zfs(remote_dataset_name, remote_host, is_remote = True)
 
     # Find latest-taken snapshot (for incrementing)
     snapshot_list = local.list(type_snapshot=is_snapshot)
@@ -116,18 +114,31 @@ def main():
     # Take a snapshot
     local.snapshot(snapshot_name)
     
-    # Send it; delete snaps older than retain values on local & remote servers
-    
-    local.send_recv(remote, incremental = is_incremental, previous_snapshot_name = latest_snapshot)
-    
-    if local.snapshot_name: 
+    # Snapshot maintenance  
+    if local.snapshot_name:
+
         for item in snapshot_list[0:-int(local_retain)]:
             local.delete_snapshot(item)
 
+
+    # If transferring the snapshot
+
+    if remote_transfer:
+        
+        # Set the remote variables
+        remote_host = config['remote_host']['host_setup']
+        remote_dataset_name = config['remote_host']['dataset']
+        remote_retain = config['remote_host']['retain']
+
+        # Create the remote host
+        remote = zfs.Zfs(remote_dataset_name, remote_host, is_remote = True)
+
+        # Send the snapshot
+        local.send_recv(remote, incremental = is_incremental, previous_snapshot_name = latest_snapshot)
+
+        # Snapshot maintenance for the remote host
         for item in snapshot_list[0:-int(remote_retain)]:
             remote.delete_snapshot(item)
-
-
 #
 # Return the correct log path based on current location
 #
