@@ -114,13 +114,21 @@ def main():
     latest_snapshot = local.get_latest_snapshot(snapshot_list)
     
     # Take a snapshot
-    local.snapshot(snapshot_name)
+    try:
+        local.snapshot(snapshot_name)
+        log.info("Snapshot taken: " + local.snapshot_name)
+    except:
+        log.error("Failed to take snapshot.")
     
     # Snapshot maintenance  
     if local.snapshot_name:
-
-        for item in snapshot_list[0:-int(local_retain)]:
-            local.delete_snapshot(item)
+        
+        try:
+            log.info("Deleting snapshots in excess of " + str(local_retain))
+            for item in snapshot_list[0:-int(local_retain)]:
+                local.delete_snapshot(item)
+        except:
+            log.error("Unable to delete local snapshots.")
 
 
     # If transferring the snapshot
@@ -136,11 +144,20 @@ def main():
         remote = zfs.Zfs(remote_dataset_name, remote_host, is_remote = True)
 
         # Send the snapshot
-        local.send_recv(remote, incremental = is_incremental, previous_snapshot_name = latest_snapshot)
+        try:
+            log.info("Sending snaphot to remote host.")
+            local.send_recv(remote, incremental = is_incremental, previous_snapshot_name = latest_snapshot)
+        except:
+            log.error("Unable to send snapshot to remote host.")
 
         # Snapshot maintenance for the remote host
-        for item in snapshot_list[0:-int(remote_retain)]:
-            remote.delete_snapshot(item)
+        try:
+            log.info("Deleting snapshots in excess of " + str(remote_retain))
+            for item in snapshot_list[0:-int(remote_retain)]:
+                remote.delete_snapshot(item)
+        except:
+            log.error("Unable to delete local snapshots.")
+
 #
 # Return the correct log path based on current location
 #
