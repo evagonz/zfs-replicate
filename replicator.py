@@ -124,7 +124,7 @@ def main():
     if local.snapshot_name:
         
         try:
-            log.info("Deleting snapshots in excess of " + str(local_retain))
+            log.info("Deleting snapshots in excess of " + str(local_retain +1 ))
             for item in snapshot_list[0:-int(local_retain)]:
                 local.delete_snapshot(item)
         except:
@@ -152,11 +152,14 @@ def main():
 
         # Snapshot maintenance for the remote host
         try:
-            log.info("Deleting snapshots in excess of " + str(remote_retain))
+            log.info("Deleting snapshots in excess of " + str(remote_retain + 1))
             for item in snapshot_list[0:-int(remote_retain)]:
                 remote.delete_snapshot(item)
         except:
             log.error("Unable to delete local snapshots.")
+
+        
+    log.info("ZFS REPLICATOR END");
 
 #
 # Return the correct log path based on current location
