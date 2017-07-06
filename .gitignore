@@ -3,3 +3,4 @@
 *.pyc
 __pycache__/
 replicator_config.yml
+.reviewboardrc
