@@ -82,6 +82,8 @@ def main():
 
     if arguments['-t'] :
         remote_transfer = True
+    else:
+        remote_transfer = False
 
 
     #
@@ -89,7 +91,7 @@ def main():
     #
 
     local_dataset_name = config['local_host']['dataset']
-    local_retain = config['local_host']['retain']
+    local_retain = int(config['local_host']['retain']) - 1
 
     is_incremental = config['snapshot_information']['incremental']
     is_snapshot = config['snapshot_information']['type_snapshot']
@@ -128,7 +130,7 @@ def main():
         # Set the remote variables
         remote_host = config['remote_host']['host_setup']
         remote_dataset_name = config['remote_host']['dataset']
-        remote_retain = config['remote_host']['retain']
+        remote_retain = int(config['remote_host']['retain']) - 1
 
         # Create the remote host
         remote = zfs.Zfs(remote_dataset_name, remote_host, is_remote = True)
