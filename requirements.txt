@@ -20,7 +20,7 @@ pyasn1==0.2.2
 pycparser==2.17
 pycrypto==2.6.1
 pygobject==3.20.0
-pyOpenSSL==0.15.1
+pyOpenSSL==17.5.0
 pyparsing==2.1.10
 pytest==3.0.6
 python-cloudfiles==1.7.10
